@@ -254,6 +254,7 @@ expense-tracker/
   excel_ops.py      # Excel 创建/追加脚本
   requirements.txt  # Python 依赖
   README.md
+  CHANGELOG.md      # 版本变更日志
 ```
 
 ---
