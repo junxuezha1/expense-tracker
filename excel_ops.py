@@ -137,7 +137,7 @@ def _write_total_row(ws, row: int):
     lc.border = BORDER
 
     ac = ws.cell(row=row, column=COL_AMT,
-                 value=f"=SUMIF({get_column_letter(COL_AMT)}{DATA_START}:{get_column_letter(COL_AMT)}{row-1},\">0\")")
+                 value=f"=SUMPRODUCT((ISNUMBER({get_column_letter(COL_SEQ)}{DATA_START}:{get_column_letter(COL_SEQ)}{row-1}))*({get_column_letter(COL_AMT)}{DATA_START}:{get_column_letter(COL_AMT)}{row-1}))")
     ac.font = FONT_TOTAL
     ac.fill = FILL_GOLD
     ac.alignment = Alignment(vertical="center", horizontal="center")
@@ -163,23 +163,27 @@ def _build_summary_sheet(ws, title: str):
     ws.row_dimensions[1].height = 36
 
     d = f"'{DETAIL_SHEET}'"
-    # Note: after restructure, type=col B(2), amount=col D(4), pay=col F(6), inv=col G(7)
+    seq_col = get_column_letter(COL_SEQ)
+    amt_col = get_column_letter(COL_AMT)
+    pay_col = get_column_letter(COL_PAY)
+    inv_col = get_column_letter(COL_INV)
+    typ_col = get_column_letter(COL_TYPE)
     sections = [
         ("总览", [
-            ("总金额（元）", f"=SUMIF({d}!{get_column_letter(COL_AMT)}:{get_column_letter(COL_AMT)},\">0\",{d}!{get_column_letter(COL_AMT)}:{get_column_letter(COL_AMT)})"),
-            ("总条数",       f"=COUNTA({d}!A:A)-2"),
+            ("总金额（元）", f"=SUMPRODUCT((ISNUMBER({d}!{seq_col}:{seq_col}))*({d}!{amt_col}:{amt_col}))"),
+            ("总条数",       f"=COUNTA({d}!{seq_col}:{seq_col})-2"),
         ]),
         ("按付款方式", [
-            ("对公合计", f"=SUMIF({d}!{get_column_letter(COL_PAY)}:{get_column_letter(COL_PAY)},\"对公\",{d}!{get_column_letter(COL_AMT)}:{get_column_letter(COL_AMT)})"),
-            ("对私合计", f"=SUMIF({d}!{get_column_letter(COL_PAY)}:{get_column_letter(COL_PAY)},\"对私\",{d}!{get_column_letter(COL_AMT)}:{get_column_letter(COL_AMT)})"),
+            ("对公合计", f"=SUMIF({d}!{pay_col}:{pay_col},\"对公\",{d}!{amt_col}:{amt_col})"),
+            ("对私合计", f"=SUMIF({d}!{pay_col}:{pay_col},\"对私\",{d}!{amt_col}:{amt_col})"),
         ]),
         ("按发票状态", [
-            ("有发票合计", f"=SUMIF({d}!{get_column_letter(COL_INV)}:{get_column_letter(COL_INV)},\"有发票\",{d}!{get_column_letter(COL_AMT)}:{get_column_letter(COL_AMT)})"),
-            ("无发票合计", f"=SUMIF({d}!{get_column_letter(COL_INV)}:{get_column_letter(COL_INV)},\"无发票\",{d}!{get_column_letter(COL_AMT)}:{get_column_letter(COL_AMT)})"),
-            ("待补合计",   f"=SUMIF({d}!{get_column_letter(COL_INV)}:{get_column_letter(COL_INV)},\"待补\",{d}!{get_column_letter(COL_AMT)}:{get_column_letter(COL_AMT)})"),
+            ("有发票合计", f"=SUMIF({d}!{inv_col}:{inv_col},\"有发票\",{d}!{amt_col}:{amt_col})"),
+            ("无发票合计", f"=SUMIF({d}!{inv_col}:{inv_col},\"无发票\",{d}!{amt_col}:{amt_col})"),
+            ("待补合计",   f"=SUMIF({d}!{inv_col}:{inv_col},\"待补\",{d}!{amt_col}:{amt_col})"),
         ]),
         ("按费用类型", [
-            (et, f"=SUMIF({d}!{get_column_letter(COL_TYPE)}:{get_column_letter(COL_TYPE)},\"{et}\",{d}!{get_column_letter(COL_AMT)}:{get_column_letter(COL_AMT)})")
+            (et, f"=SUMIF({d}!{typ_col}:{typ_col},\"{et}\",{d}!{amt_col}:{amt_col})")
             for et in EXPENSE_TYPES
         ]),
     ]
