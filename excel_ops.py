@@ -14,12 +14,12 @@ from openpyxl.utils import get_column_letter
 DETAIL_SHEET = "明细"
 SUMMARY_SHEET = "汇总"
 
-# 列顺序：费用类型紧跟序号，录入时间移到末尾
-HEADERS    = ["序号", "费用类型", "发生日期", "金额（元）", "事由/摘要", "付款方式", "发票状态", "经办人", "备注", "录入时间"]
-COL_WIDTHS = [6,      12,         12,          14,           32,          10,          10,          10,      22,     18]
+# 列顺序：金额移至备注左侧
+HEADERS    = ["序号", "费用类型", "发生日期", "事由/摘要", "付款方式", "发票状态", "经办人", "金额（元）", "备注", "录入时间"]
+COL_WIDTHS = [6,      12,         12,          32,           10,          10,          10,      14,           22,     18]
 
 # 列索引（1-based）
-COL_SEQ, COL_TYPE, COL_DATE, COL_AMT, COL_DESC, COL_PAY, COL_INV, COL_PERSON, COL_NOTE, COL_TIME = range(1, 11)
+COL_SEQ, COL_TYPE, COL_DATE, COL_DESC, COL_PAY, COL_INV, COL_PERSON, COL_AMT, COL_NOTE, COL_TIME = range(1, 11)
 
 # 报账系统
 EXPENSE_TYPES_REIMBURSEMENT = [
@@ -96,28 +96,27 @@ def _style_data_cell(c, fill, font=None, align=None, border=BORDER, fmt=None):
 
 
 def _write_subtotal_row(ws, row: int, label: str, amt_col_letter: str, start_row: int, end_row: int):
-    """Insert a subtotal row spanning all columns."""
-    # Label in type col (merged with seq col)
-    ws.merge_cells(start_row=row, start_column=COL_SEQ, end_row=row, end_column=COL_TYPE)
-    lc = ws.cell(row=row, column=COL_SEQ, value=f"{label} 小计")
+    """Insert a subtotal row; seq cell left empty so numbering is uninterrupted."""
+    sc = ws.cell(row=row, column=COL_SEQ, value="")
+    sc.fill = FILL_SUBTOTAL
+    sc.border = BORDER
+
+    ws.merge_cells(start_row=row, start_column=COL_TYPE, end_row=row, end_column=COL_PERSON)
+    lc = ws.cell(row=row, column=COL_TYPE, value=f"{label} 小计")
     lc.font = FONT_SUBTOTAL
     lc.fill = FILL_SUBTOTAL
     lc.alignment = Alignment(horizontal="center", vertical="center")
     lc.border = BORDER
 
-    # Amount formula
     ac = ws.cell(row=row, column=COL_AMT,
                  value=f"=SUM({get_column_letter(COL_AMT)}{start_row}:{get_column_letter(COL_AMT)}{end_row})")
     ac.font = FONT_SUBTOTAL
     ac.fill = FILL_SUBTOTAL
-    ac.alignment = Alignment(vertical="center", horizontal="right")
+    ac.alignment = Alignment(vertical="center", horizontal="center")
     ac.border = BORDER
     ac.number_format = AMOUNT_FMT
 
-    # Fill remaining cells
-    for col in range(1, NUM_COLS + 1):
-        if col in (COL_SEQ, COL_TYPE, COL_AMT):
-            continue
+    for col in (COL_NOTE, COL_TIME):
         c = ws.cell(row=row, column=col, value="")
         c.fill = FILL_SUBTOTAL
         c.border = BORDER
@@ -125,26 +124,27 @@ def _write_subtotal_row(ws, row: int, label: str, amt_col_letter: str, start_row
 
 
 def _write_total_row(ws, row: int):
-    """Grand total row at the bottom."""
-    ws.merge_cells(start_row=row, start_column=COL_SEQ, end_row=row, end_column=COL_TYPE)
-    lc = ws.cell(row=row, column=COL_SEQ, value="合  计")
+    """Grand total row; seq cell left empty."""
+    sc = ws.cell(row=row, column=COL_SEQ, value="")
+    sc.fill = FILL_GOLD
+    sc.border = BORDER
+
+    ws.merge_cells(start_row=row, start_column=COL_TYPE, end_row=row, end_column=COL_PERSON)
+    lc = ws.cell(row=row, column=COL_TYPE, value="合  计")
     lc.font = FONT_TOTAL
     lc.fill = FILL_GOLD
     lc.alignment = Alignment(horizontal="center", vertical="center")
     lc.border = BORDER
 
-    # Sum all amount cells that are not subtotal/total rows — use SUMIF to skip text
     ac = ws.cell(row=row, column=COL_AMT,
                  value=f"=SUMIF({get_column_letter(COL_AMT)}{DATA_START}:{get_column_letter(COL_AMT)}{row-1},\">0\")")
     ac.font = FONT_TOTAL
     ac.fill = FILL_GOLD
-    ac.alignment = Alignment(vertical="center", horizontal="right")
+    ac.alignment = Alignment(vertical="center", horizontal="center")
     ac.border = BORDER
     ac.number_format = AMOUNT_FMT
 
-    for col in range(1, NUM_COLS + 1):
-        if col in (COL_SEQ, COL_TYPE, COL_AMT):
-            continue
+    for col in (COL_NOTE, COL_TIME):
         c = ws.cell(row=row, column=col, value="")
         c.fill = FILL_GOLD
         c.border = BORDER
@@ -242,25 +242,26 @@ def _rebuild_detail(ws, all_records: list, now: str):
             invoice = "无发票" if expense_type in NO_INVOICE_TYPES else rec.get("发票状态", "待补")
             values = {
                 COL_SEQ:    seq,
-                COL_TYPE:   expense_type if i == 0 else None,  # only first row gets value; merge handles display
+                COL_TYPE:   expense_type if i == 0 else None,
                 COL_DATE:   rec.get("发生日期", "待补"),
-                COL_AMT:    rec.get("金额", "待补"),
                 COL_DESC:   rec.get("事由", "待补"),
                 COL_PAY:    rec.get("付款方式", "待补"),
                 COL_INV:    invoice,
                 COL_PERSON: rec.get("经办人", ""),
+                COL_AMT:    rec.get("金额", "待补"),
                 COL_NOTE:   rec.get("备注", ""),
                 COL_TIME:   rec.get("录入时间", now),
             }
             for col, val in values.items():
                 c = ws.cell(row=row, column=col, value=val)
                 c.fill = fill
-                c.font = FONT_BODY
                 c.border = BORDER
-                c.alignment = Alignment(vertical="center", wrap_text=(col == COL_DESC))
+                c.alignment = Alignment(vertical="center", horizontal="center", wrap_text=(col == COL_DESC))
                 if col == COL_AMT and isinstance(val, (int, float)):
                     c.number_format = AMOUNT_FMT
-                    c.alignment = Alignment(vertical="center", horizontal="right")
+                    c.font = Font(bold=True, size=10, name="微软雅黑")
+                else:
+                    c.font = FONT_BODY
             ws.row_dimensions[row].height = 18
             seq += 1
             row += 1
@@ -310,11 +311,11 @@ def append_rows(file_path: str, title: str, records: list) -> dict:
             existing.append({
                 "费用类型":  ws.cell(row=r, column=COL_TYPE).value or "",
                 "发生日期":  ws.cell(row=r, column=COL_DATE).value or "待补",
-                "金额":      ws.cell(row=r, column=COL_AMT).value,
                 "事由":      ws.cell(row=r, column=COL_DESC).value or "待补",
                 "付款方式":  ws.cell(row=r, column=COL_PAY).value or "待补",
                 "发票状态":  ws.cell(row=r, column=COL_INV).value or "待补",
                 "经办人":    ws.cell(row=r, column=COL_PERSON).value or "",
+                "金额":      ws.cell(row=r, column=COL_AMT).value,
                 "备注":      ws.cell(row=r, column=COL_NOTE).value or "",
                 "录入时间":  ws.cell(row=r, column=COL_TIME).value or "",
             })

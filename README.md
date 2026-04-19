@@ -59,82 +59,78 @@
 <table>
 <thead>
 <tr>
-  <th>序号</th>
-  <th>费用类型</th>
-  <th>发生日期</th>
-  <th align="right">金额（元）</th>
-  <th>事由/摘要</th>
-  <th>付款方式</th>
-  <th>发票状态</th>
+  <th align="center">序号</th>
+  <th align="center">费用类型</th>
+  <th align="center">发生日期</th>
+  <th align="center">事由/摘要</th>
+  <th align="center">付款方式</th>
+  <th align="center">发票状态</th>
+  <th align="center">金额（元）</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-  <td>1</td>
+  <td align="center">1</td>
   <td rowspan="2" align="center"><b>市内交通费</b></td>
-  <td>2026-04-17</td>
-  <td align="right">50.00</td>
-  <td>打车去客户处</td>
-  <td>对私</td>
-  <td>无发票</td>
+  <td align="center">2026-04-17</td>
+  <td align="center">打车去客户处</td>
+  <td align="center">对私</td>
+  <td align="center">无发票</td>
+  <td align="center"><b>50.00</b></td>
 </tr>
 <tr>
-  <td>2</td>
-  <td>2026-04-18</td>
-  <td align="right">30.00</td>
-  <td>打车回公司</td>
-  <td>对私</td>
-  <td>无发票</td>
+  <td align="center">2</td>
+  <td align="center">2026-04-18</td>
+  <td align="center">打车回公司</td>
+  <td align="center">对私</td>
+  <td align="center">无发票</td>
+  <td align="center"><b>30.00</b></td>
 </tr>
 <tr style="background:#e2efda">
-  <td colspan="2" align="center"><b>市内交通费 小计</b></td>
-  <td></td>
-  <td align="right"><b>80.00</b></td>
-  <td colspan="3"></td>
+  <td align="center"></td>
+  <td colspan="5" align="center"><b>市内交通费 小计</b></td>
+  <td align="center"><b>80.00</b></td>
 </tr>
 <tr>
-  <td>3</td>
+  <td align="center">3</td>
   <td align="center"><b>公务招待费</b></td>
-  <td>2026-04-18</td>
-  <td align="right">320.00</td>
-  <td>招待客户午饭</td>
-  <td>对公</td>
-  <td>有发票</td>
+  <td align="center">2026-04-18</td>
+  <td align="center">招待客户午饭</td>
+  <td align="center">对公</td>
+  <td align="center">有发票</td>
+  <td align="center"><b>320.00</b></td>
 </tr>
 <tr style="background:#e2efda">
-  <td colspan="2" align="center"><b>公务招待费 小计</b></td>
-  <td></td>
-  <td align="right"><b>320.00</b></td>
-  <td colspan="3"></td>
+  <td align="center"></td>
+  <td colspan="5" align="center"><b>公务招待费 小计</b></td>
+  <td align="center"><b>320.00</b></td>
 </tr>
 <tr>
-  <td>4</td>
+  <td align="center">4</td>
   <td rowspan="2" align="center"><b>课酬</b></td>
-  <td>2026-04-18</td>
-  <td align="right">800.00</td>
-  <td>张老师授课</td>
-  <td>对私</td>
-  <td>无发票（自动）</td>
+  <td align="center">2026-04-18</td>
+  <td align="center">张老师授课</td>
+  <td align="center">对私</td>
+  <td align="center">无发票（自动）</td>
+  <td align="center"><b>800.00</b></td>
 </tr>
 <tr>
-  <td>5</td>
-  <td>2026-04-18</td>
-  <td align="right">600.00</td>
-  <td>李老师授课</td>
-  <td>对私</td>
-  <td>无发票（自动）</td>
+  <td align="center">5</td>
+  <td align="center">2026-04-18</td>
+  <td align="center">李老师授课</td>
+  <td align="center">对私</td>
+  <td align="center">无发票（自动）</td>
+  <td align="center"><b>600.00</b></td>
 </tr>
 <tr style="background:#e2efda">
-  <td colspan="2" align="center"><b>课酬 小计</b></td>
-  <td></td>
-  <td align="right"><b>1,400.00</b></td>
-  <td colspan="3"></td>
+  <td align="center"></td>
+  <td colspan="5" align="center"><b>课酬 小计</b></td>
+  <td align="center"><b>1,400.00</b></td>
 </tr>
 <tr style="background:#fff2cc">
-  <td colspan="2" align="center"><b>合　计</b></td>
-  <td></td>
-  <td align="right"><b>1,800.00</b></td>
-  <td colspan="3"></td>
+  <td align="center"></td>
+  <td colspan="5" align="center"><b>合　计</b></td>
+  <td align="center"><b>1,800.00</b></td>
 </tr>
 </tbody>
 </table>
@@ -239,7 +235,7 @@ Python 3.8+，仅需 `openpyxl`，无其他依赖。
 
 **明细 Sheet**
 
-| 序号 | 录入时间 | 发生日期 | 金额（元） | 费用类型 | 事由/摘要 | 付款方式 | 发票状态 | 经办人 | 备注 |
+| 序号 | 费用类型 | 发生日期 | 事由/摘要 | 付款方式 | 发票状态 | 经办人 | 金额（元） | 备注 | 录入时间 |
 
 **汇总 Sheet**（SUMIF 公式，追加数据后自动更新）
 
