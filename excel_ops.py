@@ -226,7 +226,11 @@ def _create_workbook(path: Path, title: str):
 
 def _rebuild_detail(ws, all_records: list, now: str):
     """Rewrite all data rows with merged type cells, subtotals, and grand total."""
-    # Clear existing data rows (keep title row 1 and header row 2)
+    # Unmerge all ranges in the data area first — stale merges survive delete_rows
+    # and cause openpyxl to return None for cells inside old merge ranges on read-back
+    for m in list(ws.merged_cells.ranges):
+        if m.min_row >= DATA_START:
+            ws.unmerge_cells(str(m))
     if ws.max_row >= DATA_START:
         ws.delete_rows(DATA_START, ws.max_row - DATA_START + 1)
 
