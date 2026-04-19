@@ -1,10 +1,14 @@
+<div align="center">
+
 # 💰 expense-tracker
 
-> 一个 Claude Code Skill，用自然语言输入零散费用，自动整理成格式化的 Excel 报账表。
+**一个 Claude Code Skill，用自然语言输入零散费用，自动整理成格式化的 Excel 报账表。**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Skill-blueviolet)](https://claude.ai/code)
+
+</div>
 
 ---
 
