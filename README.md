@@ -52,19 +52,88 @@
 
 **写入 Excel 后的明细 Sheet 结构：**
 
-| 序号 | 费用类型 | 发生日期 | 金额（元） | 事由/摘要 | 付款方式 | 发票状态 |
-|------|----------|----------|----------:|-----------|----------|----------|
-| 1 | ↕ 市内交通费 | 2026-04-17 | 50.00 | 打车去客户处 | 对私 | 无发票 |
-| 2 | ↕ （合并↑） | 2026-04-18 | 30.00 | 打车回公司 | 对私 | 无发票 |
-| — | **市内交通费 小计** | | **80.00** | | | |
-| 3 | 公务招待费 | 2026-04-18 | 320.00 | 招待客户午饭 | 对公 | 有发票 |
-| — | **公务招待费 小计** | | **320.00** | | | |
-| 4 | ↕ 课酬 | 2026-04-18 | 800.00 | 张老师授课 | 对私 | 无发票 |
-| 5 | ↕ （合并↑） | 2026-04-18 | 600.00 | 李老师授课 | 对私 | 无发票 |
-| — | **课酬 小计** | | **1,400.00** | | | |
-| — | 🟡 **合　计** | | 🟡 **1,800.00** | | | |
-
-> ↕ 表示该列在 Excel 中为合并单元格（同类型多行共用一个单元格）。小计行绿色背景，合计行金色背景。
+<table>
+<thead>
+<tr>
+  <th>序号</th>
+  <th>费用类型</th>
+  <th>发生日期</th>
+  <th align="right">金额（元）</th>
+  <th>事由/摘要</th>
+  <th>付款方式</th>
+  <th>发票状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>1</td>
+  <td rowspan="2" align="center"><b>市内交通费</b></td>
+  <td>2026-04-17</td>
+  <td align="right">50.00</td>
+  <td>打车去客户处</td>
+  <td>对私</td>
+  <td>无发票</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td>2026-04-18</td>
+  <td align="right">30.00</td>
+  <td>打车回公司</td>
+  <td>对私</td>
+  <td>无发票</td>
+</tr>
+<tr style="background:#e2efda">
+  <td colspan="2" align="center"><b>市内交通费 小计</b></td>
+  <td></td>
+  <td align="right"><b>80.00</b></td>
+  <td colspan="3"></td>
+</tr>
+<tr>
+  <td>3</td>
+  <td align="center"><b>公务招待费</b></td>
+  <td>2026-04-18</td>
+  <td align="right">320.00</td>
+  <td>招待客户午饭</td>
+  <td>对公</td>
+  <td>有发票</td>
+</tr>
+<tr style="background:#e2efda">
+  <td colspan="2" align="center"><b>公务招待费 小计</b></td>
+  <td></td>
+  <td align="right"><b>320.00</b></td>
+  <td colspan="3"></td>
+</tr>
+<tr>
+  <td>4</td>
+  <td rowspan="2" align="center"><b>课酬</b></td>
+  <td>2026-04-18</td>
+  <td align="right">800.00</td>
+  <td>张老师授课</td>
+  <td>对私</td>
+  <td>无发票（自动）</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td>2026-04-18</td>
+  <td align="right">600.00</td>
+  <td>李老师授课</td>
+  <td>对私</td>
+  <td>无发票（自动）</td>
+</tr>
+<tr style="background:#e2efda">
+  <td colspan="2" align="center"><b>课酬 小计</b></td>
+  <td></td>
+  <td align="right"><b>1,400.00</b></td>
+  <td colspan="3"></td>
+</tr>
+<tr style="background:#fff2cc">
+  <td colspan="2" align="center"><b>合　计</b></td>
+  <td></td>
+  <td align="right"><b>1,800.00</b></td>
+  <td colspan="3"></td>
+</tr>
+</tbody>
+</table>
 
 ---
 
